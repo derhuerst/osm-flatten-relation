@@ -1,0 +1,12 @@
+{
+	"name":        "osm-flatten-relation",
+	"description": "Resolve an OpenStreetMap relation recursively.",
+	"version":     "0.1.0",
+	"main":        "index.js",
+	"files":       ["index.js"],
+	"keywords":    ["osm", "openstreetmap", "relation", "flatten", "tree", "recursive"],
+	"author":      "Jannis R <mail@jannisr.de>",
+	"homepage":    "https://github.com/derhuerst/osm-flatten-relation",
+	"repository":  "derhuerst/osm-flatten-relation",
+	"license":     "ISC"
+}
