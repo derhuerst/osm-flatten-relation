@@ -18,11 +18,26 @@ npm install osm-flatten-relation
 
 ## Usage
 
+`flatten(relation, [concurrency])`
+
+*Note*: With `concurrency > 1`, nodes will *not* be emitted in breadth-first order anymore.
+
+### Example
+
+To get all nodes of [*U-Bahnlinie U6: Alt-Mariendorf => Alt-Tegel*](http://www.openstreetmap.org/relation/2679163) with a `concurrency` of `5` requests.
+
 ```js
 const flatten = require('osm-flatten-relation')
 
-flatten(4639168).on('data', console.log)
-// todo
+flatten(2679163, 5)
+.on('data', (node) => console.log(node))
+```
+
+```js
+{id: 3043920508, latitude: 52.439691,  longitude: 13.3877031}
+{id: 31034998,   latitude: 52.4537104, longitude: 13.3843233}
+// …
+{id: 1688279730, latitude: 52.439011,  longitude: 13.3878563}
 ```
 
 
