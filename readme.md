@@ -3,7 +3,9 @@
 **Resolve an [OpenStreetMap](http://www.openstreetmap.org) relation recursively.** Returns a [readable stream](https://nodejs.org/api/stream.html#stream_class_stream_readable) of a [relation](http://wiki.openstreetmap.org/wiki/Elements#Relation)'s [ways](http://wiki.openstreetmap.org/wiki/Elements#Way) and [nodes](http://wiki.openstreetmap.org/wiki/Elements#Node).
 
 [![npm version](https://img.shields.io/npm/v/osm-flatten-relation.svg)](https://www.npmjs.com/package/osm-flatten-relation)
+[![build status](https://img.shields.io/travis/derhuerst/osm-flatten-relation.svg)](https://travis-ci.org/derhuerst/osm-flatten-relation)
 [![dependency status](https://img.shields.io/david/derhuerst/osm-flatten-relation.svg)](https://david-dm.org/derhuerst/osm-flatten-relation)
+[![dev dependency status](https://img.shields.io/david/dev/derhuerst/osm-flatten-relation.svg)](https://david-dm.org/derhuerst/osm-flatten-relation#info=devDependencies)
 ![ISC-licensed](https://img.shields.io/github/license/derhuerst/osm-flatten-relation.svg)
 
 
