@@ -67,7 +67,7 @@ const flatten = module.exports = (id, concurrency) => {
 			tasks.push(getNode(child.id, onNode))
 		else out.emit('error', new Error(`unknown child type ${child.type}`))
 	}
-	const onNodeInWay = (node) => tasks.push(getNode(node.id, onNodeInWay))
+	const onNodeInWay = (node) => tasks.push(getNode(node.id, onNode))
 	const onNode = (d) => out.write(d)
 
 	tasks.push(getRelation(id, onChildInRelation))
