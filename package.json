@@ -8,5 +8,10 @@
 	"author":      "Jannis R <mail@jannisr.de>",
 	"homepage":    "https://github.com/derhuerst/osm-flatten-relation",
 	"repository":  "derhuerst/osm-flatten-relation",
-	"license":     "ISC"
+	"license":     "ISC",
+	"dependencies": {
+		"queue": "^4",
+		"got": "^6.3",
+		"xml2json": "^0.9.1"
+	}
 }
