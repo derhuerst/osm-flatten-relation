@@ -3,26 +3,33 @@
 const queue  = require('queue')
 const stream = require('stream')
 const got    = require('got')
-const toJson = require('xml2json').toJson
+const parse = require('xml2js').parseString
 
 
 
 const get = (type, id) =>
 	got(`http://www.openstreetmap.org/api/0.6/${type}/${id}`)
 	.catch((err) => err)
-	.then((res) => JSON.parse(toJson(res.body)).osm)
+	.then((res) => new Promise((yay, nay) => {
+		parse(res.body, (err, data) => {
+			if (err) nay(err)
+			else yay(data.osm)
+		})
+	}))
 
 
 
 const getRelation = (id, onChild) => (next) =>
 	get('relation', id).catch(next)
 	.then((d) => {
-		if (Array.isArray(d.relation.member)) d.relation.member
+		if (Array.isArray(d.relation[0].member))
+			d.relation[0].member
 			.map((c) => ({
-				  type: c.type
-				, role: c.role
-				, id: parseInt(c.ref)
-			})).forEach(onChild)
+				  type: c.$.type
+				, role: c.$.role
+				, id: parseInt(c.$.ref)
+			}))
+			.forEach(onChild)
 		next()
 	}).catch(next)
 
@@ -31,7 +38,7 @@ const getRelation = (id, onChild) => (next) =>
 const getWay = (id, onNode) => (next) =>
 	get('way', id).catch(next)
 	.then((d) => {
-		if (Array.isArray(d.way.nd)) d.way.nd
+		if (Array.isArray(d.way[0].$.nd)) d.way[0].$.nd
 			.map((n) => ({id: parseInt(n.ref)})).forEach(onNode)
 		next()
 	}).catch(next)
@@ -42,9 +49,9 @@ const getNode = (id, done) => (next) =>
 	get('node', id).catch(next)
 	.then((d) => {
 		done({
-			  id:        parseInt(d.node.id)
-			, latitude:  parseFloat(d.node.lat)
-			, longitude: parseFloat(d.node.lon)
+			  id:        parseInt(d.node[0].$.id)
+			, latitude:  parseFloat(d.node[0].$.lat)
+			, longitude: parseFloat(d.node[0].$.lon)
 		})
 		next()
 	}).catch(next)
