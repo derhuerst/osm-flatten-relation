@@ -14,7 +14,7 @@
 	"dependencies": {
 		"queue": "^4",
 		"got": "^6.3",
-		"xml2json": "^0.10"
+		"xml2json": "buglabs/node-xml2json"
 	},
 	"devDependencies": {
 		"tape":    "^4.5.1",
