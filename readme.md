@@ -17,6 +17,14 @@ npm install osm-flatten-relation
 
 ## Usage
 
+From the command line:
+
+```
+osm-flatten-relation 2679163 >nodes.ndjson
+```
+
+As a JavaScript library:
+
 ```js
 flatten(relation, concurrency = 4, retries = 3)
 ```
