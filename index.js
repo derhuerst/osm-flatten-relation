@@ -1,8 +1,8 @@
 'use strict'
 
-const queue  = require('queue')
+const queue = require('queue')
 const stream = require('stream')
-const got    = require('got')
+const got = require('got')
 const parse = require('xml2js').parseString
 
 
@@ -36,48 +36,62 @@ const getRelation = (id, onChild) => (next) =>
 
 
 const getWay = (id, onNode) => (next) =>
-	get('way', id).catch(next)
+	get('way', id)
+	.catch(next)
 	.then((d) => {
-		if (Array.isArray(d.way[0].$.nd)) d.way[0].$.nd
-			.map((n) => ({id: parseInt(n.ref)})).forEach(onNode)
+		if (Array.isArray(d.way[0].$.nd)) {
+			for (let node of d.way[0].$.nd) {
+				onNode({id: parseInt(n.ref)})
+			}
+		}
 		next()
-	}).catch(next)
+	})
+	.catch(next)
 
 
 
-const getNode = (id, done) => (next) =>
-	get('node', id).catch(next)
+const getNode = (id, onNode) => (next) =>
+	get('node', id)
+	.catch(next)
 	.then((d) => {
-		done({
-			  id:        parseInt(d.node[0].$.id)
-			, latitude:  parseFloat(d.node[0].$.lat)
-			, longitude: parseFloat(d.node[0].$.lon)
+		onNode({
+			id: parseInt(d.node[0].$.id),
+			latitude: parseFloat(d.node[0].$.lat),
+			longitude: parseFloat(d.node[0].$.lon)
 		})
 		next()
-	}).catch(next)
+	})
+	.catch(next)
 
 
 
-const flatten = module.exports = (id, concurrency) => {
+const flatten = (id, concurrency) => {
 	const out = new stream.PassThrough({objectMode: true})
+
 	const tasks = queue()
 	tasks.concurrency = +concurrency || 1
 	tasks.on('error', (err) => out.emit('error', err))
 	tasks.on('end', () => out.end())
 
 	const onChildInRelation = (child) => {
-		if (child.type === 'relation')
+		if (child.type === 'relation') {
 			tasks.push(getRelation(child.id, onChildInRelation))
-		else if (child.type === 'way')
-			tasks.push(getWay(child.id, onNodeInWay))
-		else if (child.type === 'node')
+		} else if (child.type === 'way') {
+			tasks.push(getWay(child.id, (node) => {
+				tasks.push(getNode(node.id, onNode))
+			}))
+		} else if (child.type === 'node') {
 			tasks.push(getNode(child.id, onNode))
-		else out.emit('error', new Error(`unknown child type ${child.type}`))
+		} else {
+			out.emit('error', new Error(`unknown child type ${child.type}`))
+		}
 	}
-	const onNodeInWay = (node) => tasks.push(getNode(node.id, onNode))
 	const onNode = (d) => out.write(d)
 
 	tasks.push(getRelation(id, onChildInRelation))
 	tasks.start()
+
 	return out
 }
+
+module.exports = flatten
