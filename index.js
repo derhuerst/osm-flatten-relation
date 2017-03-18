@@ -38,9 +38,9 @@ const getRelation = (id, onChild) => (next) =>
 const getWay = (id, onNode) => (next) =>
 	get('way', id)
 	.then((d) => {
-		if (Array.isArray(d.way[0].$.nd)) {
-			for (let node of d.way[0].$.nd) {
-				onNode({id: parseInt(n.ref)})
+		if (Array.isArray(d.way[0].nd)) {
+			for (let node of d.way[0].nd) {
+				onNode({id: parseInt(node.$.ref)})
 			}
 		}
 		next()
