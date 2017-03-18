@@ -77,6 +77,8 @@ const flatten = (id, concurrency = 4, retries = 3) => {
 	tasks.on('end', () => out.end())
 
 	const onChildInRelation = (child) => {
+		out.emit(child.type, child)
+
 		if (child.type === 'relation') {
 			tasks.push(getRelation(child.id, onChildInRelation))
 		} else if (child.type === 'way') {
