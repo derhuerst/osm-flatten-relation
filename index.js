@@ -18,9 +18,11 @@ const get = (type, id) =>
 
 
 
-const getRelation = (id, onChild) => (next) =>
+const getRelation = (id, onChild, count) => (next) =>
 	get('relation', id)
 	.then((d) => {
+		count('relation')
+
 		if (Array.isArray(d.relation[0].member))
 			d.relation[0].member
 			.map((c) => ({
@@ -35,9 +37,11 @@ const getRelation = (id, onChild) => (next) =>
 
 
 
-const getWay = (id, onNode) => (next) =>
+const getWay = (id, onNode, count) => (next) =>
 	get('way', id)
 	.then((d) => {
+		count('way')
+
 		if (Array.isArray(d.way[0].nd)) {
 			for (let node of d.way[0].nd) {
 				onNode({id: parseInt(node.$.ref)})
@@ -49,9 +53,11 @@ const getWay = (id, onNode) => (next) =>
 
 
 
-const getNode = (id, onNode) => (next) =>
+const getNode = (id, onNode, count) => (next) =>
 	get('node', id)
 	.then((d) => {
+		count('node')
+
 		onNode({
 			id: parseInt(d.node[0].$.id),
 			latitude: parseFloat(d.node[0].$.lat),
@@ -67,7 +73,7 @@ const flatten = (id, concurrency = 4, retries = 3) => {
 	const out = new stream.PassThrough({objectMode: true})
 
 	const tasks = queue()
-	tasks.concurrency = parseInt(concurrency)
+	tasks.concurrency = concurrency
 	tasks.on('error', (err, task) => {
 		if (!task.retries) task.retries = 1
 
@@ -76,24 +82,36 @@ const flatten = (id, concurrency = 4, retries = 3) => {
 	})
 	tasks.on('end', () => out.end())
 
+	const stats = {
+		relation: 0,
+		way: 0,
+		node: 0
+	}
+	const count = (type) => {
+		stats[type]++
+		const data = Object.assign({queued: tasks.length - 1}, stats)
+		out.emit('stats', data)
+	}
+
 	const onChildInRelation = (child) => {
 		out.emit(child.type, child)
 
 		if (child.type === 'relation') {
-			tasks.push(getRelation(child.id, onChildInRelation))
+			tasks.push(getRelation(child.id, onChildInRelation, count))
 		} else if (child.type === 'way') {
-			tasks.push(getWay(child.id, (node) => {
-				tasks.push(getNode(node.id, onNode))
-			}))
+			const onNodeInWay = (node) => {
+				tasks.push(getNode(node.id, onNode, count))
+			}
+			tasks.push(getWay(child.id, onNodeInWay, count))
 		} else if (child.type === 'node') {
-			tasks.push(getNode(child.id, onNode))
+			tasks.push(getNode(child.id, onNode, count))
 		} else {
 			out.emit('error', new Error(`unknown child type ${child.type}`))
 		}
 	}
 	const onNode = (d) => out.write(d)
 
-	tasks.push(getRelation(id, onChildInRelation))
+	tasks.push(getRelation(id, onChildInRelation, count))
 	tasks.start()
 
 	return out
