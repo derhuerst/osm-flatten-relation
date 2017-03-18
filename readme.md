@@ -17,7 +17,9 @@ npm install osm-flatten-relation
 
 ## Usage
 
-`flatten(relation, [concurrency])`
+```js
+flatten(relation, concurrency = 4, retries = 3)
+```
 
 `flatten` returns a [readable stream](https://nodejs.org/api/stream.html#stream_class_stream_readable) of a [relation](http://wiki.openstreetmap.org/wiki/Elements#Relation)'s [ways](http://wiki.openstreetmap.org/wiki/Elements#Way) and [nodes](http://wiki.openstreetmap.org/wiki/Elements#Node).
 

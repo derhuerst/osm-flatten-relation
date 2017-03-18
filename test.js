@@ -4,7 +4,7 @@ const test    = require('tape')
 const flatten = require('./index')
 
 test('integration test', (t) => {
-	flatten(2679163, 5)
+	flatten(2679163, 5, 5)
 	.on('error', (err) => t.fail(err.message))
 	.on('data', (d) => {
 		t.equal(typeof d.id,        'number', 'node id is not a number')

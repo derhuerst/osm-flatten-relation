@@ -9,7 +9,6 @@ const parse = require('xml2js').parseString
 
 const get = (type, id) =>
 	got(`http://www.openstreetmap.org/api/0.6/${type}/${id}`)
-	.catch((err) => err)
 	.then((res) => new Promise((yay, nay) => {
 		parse(res.body, (err, data) => {
 			if (err) nay(err)
@@ -20,7 +19,7 @@ const get = (type, id) =>
 
 
 const getRelation = (id, onChild) => (next) =>
-	get('relation', id).catch(next)
+	get('relation', id)
 	.then((d) => {
 		if (Array.isArray(d.relation[0].member))
 			d.relation[0].member
@@ -31,13 +30,13 @@ const getRelation = (id, onChild) => (next) =>
 			}))
 			.forEach(onChild)
 		next()
-	}).catch(next)
+	})
+	.catch(next)
 
 
 
 const getWay = (id, onNode) => (next) =>
 	get('way', id)
-	.catch(next)
 	.then((d) => {
 		if (Array.isArray(d.way[0].$.nd)) {
 			for (let node of d.way[0].$.nd) {
@@ -52,7 +51,6 @@ const getWay = (id, onNode) => (next) =>
 
 const getNode = (id, onNode) => (next) =>
 	get('node', id)
-	.catch(next)
 	.then((d) => {
 		onNode({
 			id: parseInt(d.node[0].$.id),
@@ -65,12 +63,17 @@ const getNode = (id, onNode) => (next) =>
 
 
 
-const flatten = (id, concurrency) => {
+const flatten = (id, concurrency = 4, retries = 3) => {
 	const out = new stream.PassThrough({objectMode: true})
 
 	const tasks = queue()
-	tasks.concurrency = +concurrency || 1
-	tasks.on('error', (err) => out.emit('error', err))
+	tasks.concurrency = parseInt(concurrency)
+	tasks.on('error', (err, task) => {
+		if (!task.retries) task.retries = 1
+
+		if (task.retries >= retries) out.emit('error', err)
+		else tasks.push(task)
+	})
 	tasks.on('end', () => out.end())
 
 	const onChildInRelation = (child) => {
