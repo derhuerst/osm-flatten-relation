@@ -2,6 +2,8 @@
 'use strict'
 
 const minimist = require('minimist')
+const {isatty} = require('tty')
+const differ = require('ansi-diff-stream')
 const esc = require('ansi-escapes')
 const ndjson = require('ndjson')
 
@@ -36,29 +38,36 @@ if (!argv._[0]) {
 
 
 
-const report = (stats) => process.stderr.write([
-	esc.eraseLine,
-	esc.cursorTo(0),
-	[
-		stats.relation + (stats.relation === 1 ? ' relation' : ' relations'),
-		stats.way + (stats.way === 1 ? ' way' : ' ways'),
-		stats.node + (stats.node === 1 ? ' node' : ' nodes'),
-		stats.queued + ' queued'
-	].join(', ')
-].join(''))
-
 const showError = (err) => {
 	console.error(err)
 	process.exit(1)
 }
 
 const data = flatten(+argv._[0], 1, 1)
-if (!argv.s && !argv.silent) {
-	data.on('stats', report)
-	data.on('end', () => process.stderr.write('\n'))
-}
-data.on('error', showError)
 
 data
+.on('error', showError)
 .pipe(ndjson.stringify())
 .pipe(process.stdout)
+
+
+
+if (!argv.s && !argv.silent) {
+	const clearReports = isatty(process.stderr.fd) && !isatty(process.stdout.fd)
+
+	let reporter = process.stderr
+	if (clearReports) {
+		reporter = differ()
+		reporter.pipe(process.stderr)
+	}
+
+	const report = (stats) => {
+		reporter.write([
+			stats.relation + (stats.relation === 1 ? ' relation' : ' relations'),
+			stats.way + (stats.way === 1 ? ' way' : ' ways'),
+			stats.node + (stats.node === 1 ? ' node' : ' nodes'),
+			stats.queued + ' queued'
+		].join(', ') + (clearReports ? '' : '\n'))
+	}
+	data.on('stats', report)
+}
