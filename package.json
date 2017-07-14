@@ -1,7 +1,7 @@
 {
 	"name": "osm-flatten-relation",
 	"description": "Resolve an OpenStreetMap relation recursively.",
-	"version":     "0.3.0",
+	"version":     "1.0.0",
 	"main":        "index.js",
 	"files":       ["index.js", "cli.js"],
 	"bin":         {"osm-flatten-relation": "./cli.js"},
