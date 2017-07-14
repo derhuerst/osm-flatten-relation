@@ -1,20 +1,33 @@
 'use strict'
 
 const queue = require('queue')
-const stream = require('stream')
-const got = require('got')
+const PassThrough = require('readable-stream/passthrough')
+const {fetch} = require('fetch-ponyfill')({Promise: require('pinkie-promise')})
 const parse = require('xml2js').parseString
 
-
-
-const get = (type, id) =>
-	got(`http://www.openstreetmap.org/api/0.6/${type}/${id}`)
-	.then((res) => new Promise((yay, nay) => {
-		parse(res.body, (err, data) => {
+const get = (type, id) => {
+	return fetch(`http://www.openstreetmap.org/api/0.6/${type}/${id}`, {
+		redirect: 'follow',
+		headers: {
+			accept: 'text/xml',
+			'user-agent': 'https://github.com/derhuerst/osm-flatten-relation'
+		}
+	})
+	.then((res) => {
+		if (!res.ok) {
+			const err = new Error(res.statusText)
+			err.statusCode = res.status
+			throw err
+		}
+		return res.text()
+	})
+	.then((data) => new Promise((yay, nay) => {
+		parse(data, (err, data) => {
 			if (err) nay(err)
 			else yay(data.osm)
 		})
 	}))
+}
 
 const getRelation = (id, onChild, count) => (next) =>
 	get('relation', id)
@@ -62,7 +75,7 @@ const getNode = (id, onNode, count) => (next) =>
 	.catch(next)
 
 const flatten = (id, concurrency = 4, retries = 3) => {
-	const out = new stream.PassThrough({objectMode: true})
+	const out = new PassThrough({objectMode: true})
 
 	const tasks = queue()
 	tasks.concurrency = concurrency
