@@ -16,8 +16,6 @@ const get = (type, id) =>
 		})
 	}))
 
-
-
 const getRelation = (id, onChild, count) => (next) =>
 	get('relation', id)
 	.then((d) => {
@@ -35,8 +33,6 @@ const getRelation = (id, onChild, count) => (next) =>
 	})
 	.catch(next)
 
-
-
 const getWay = (id, onNode, count) => (next) =>
 	get('way', id)
 	.then((d) => {
@@ -51,8 +47,6 @@ const getWay = (id, onNode, count) => (next) =>
 	})
 	.catch(next)
 
-
-
 const getNode = (id, onNode, count) => (next) =>
 	get('node', id)
 	.then((d) => {
@@ -66,8 +60,6 @@ const getNode = (id, onNode, count) => (next) =>
 		next()
 	})
 	.catch(next)
-
-
 
 const flatten = (id, concurrency = 4, retries = 3) => {
 	const out = new stream.PassThrough({objectMode: true})

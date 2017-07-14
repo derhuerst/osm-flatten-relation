@@ -1,5 +1,5 @@
 {
-	"name":        "osm-flatten-relation",
+	"name": "osm-flatten-relation",
 	"description": "Resolve an OpenStreetMap relation recursively.",
 	"version":     "0.3.0",
 	"main":        "index.js",
@@ -22,11 +22,11 @@
 		"xml2js": "^0.4.17"
 	},
 	"devDependencies": {
-		"tape":    "^4.5.1",
+		"tape": "^4.5.1",
 		"tap-min": "^1.1"
 	},
 	"scripts": {
-		"test":       "tape test.js | tap-min",
+		"test": "tape test.js | tap-min",
 		"prepublish": "npm test"
 	}
 }
