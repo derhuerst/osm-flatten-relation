@@ -16,7 +16,7 @@
 		"ansi-diff-stream": "^1.2.0",
 		"ansi-escapes": "^3.0.0",
 		"fetch-ponyfill": "^4.1.0",
-		"minimist": "^1.2.0",
+		"mri": "^1.1.0",
 		"ndjson": "^1.5.0",
 		"pinkie-promise": "^2.0.1",
 		"queue": "^4",
