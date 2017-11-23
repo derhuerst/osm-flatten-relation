@@ -1,17 +1,31 @@
 {
 	"name": "osm-flatten-relation",
 	"description": "Resolve an OpenStreetMap relation recursively.",
-	"version":     "1.0.0",
-	"main":        "index.js",
-	"files":       ["index.js", "cli.js"],
-	"bin":         {"osm-flatten-relation": "./cli.js"},
-	"keywords":    ["osm", "openstreetmap", "relation", "flatten", "tree", "recursive"],
-	"author":      "Jannis R <mail@jannisr.de>",
-	"homepage":    "https://github.com/derhuerst/osm-flatten-relation",
-	"repository":  "derhuerst/osm-flatten-relation",
-	"bugs":        "https://github.com/derhuerst/osm-flatten-relation/issues",
-	"license":     "ISC",
-	"engine":      {"node": ">=6"},
+	"version": "1.0.0",
+	"main": "index.js",
+	"files": [
+		"index.js",
+		"cli.js"
+	],
+	"bin": {
+		"osm-flatten-relation": "./cli.js"
+	},
+	"keywords": [
+		"osm",
+		"openstreetmap",
+		"relation",
+		"flatten",
+		"tree",
+		"recursive"
+	],
+	"author": "Jannis R <mail@jannisr.de>",
+	"homepage": "https://github.com/derhuerst/osm-flatten-relation",
+	"repository": "derhuerst/osm-flatten-relation",
+	"bugs": "https://github.com/derhuerst/osm-flatten-relation/issues",
+	"license": "ISC",
+	"engine": {
+		"node": ">=6"
+	},
 	"dependencies": {
 		"ansi-diff-stream": "^1.2.0",
 		"ansi-escapes": "^3.0.0",
@@ -20,6 +34,7 @@
 		"ndjson": "^1.5.0",
 		"pinkie-promise": "^2.0.1",
 		"queue": "^4",
+		"readable-stream": "^2.3.3",
 		"xml2js": "^0.4.17"
 	},
 	"devDependencies": {
@@ -28,6 +43,6 @@
 	},
 	"scripts": {
 		"test": "tape test.js | tap-min",
-		"prepublish": "npm test"
+		"prepublishOnly": "npm test"
 	}
 }
