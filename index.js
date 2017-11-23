@@ -117,7 +117,7 @@ const flatten = (id, concurrency = 4, retries = 3) => {
 
 	const hasNodes = Object.create(null)
 	const onNode = (n) => {
-		if (!hasNode[n.id]) {
+		if (!hasNodes[n.id]) {
 			hasNodes[n.id] = true
 			out.write(n)
 		}
