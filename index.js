@@ -114,7 +114,14 @@ const flatten = (id, concurrency = 4, retries = 3) => {
 			out.emit('error', new Error(`unknown child type ${child.type}`))
 		}
 	}
-	const onNode = (d) => out.write(d)
+
+	const hasNodes = Object.create(null)
+	const onNode = (n) => {
+		if (!hasNode[n.id]) {
+			hasNodes[n.id] = true
+			out.write(n)
+		}
+	}
 
 	tasks.push(getRelation(id, onChildInRelation, count))
 	tasks.start()

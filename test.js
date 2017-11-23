@@ -13,3 +13,18 @@ test('works', (t) => {
 	})
 	.on('end', () => t.end())
 })
+
+test('has no duplicates', (t) => {
+	const hasNode = Object.create(null)
+
+	flatten(6593456)
+	.on('error', t.ifError)
+	.on('data', (n) => {
+		if (hasNode[n.id]) t.fail(`node ${n.id} emitted twice`)
+		else {
+			t.pass(`node ${n.id} emitted for the first time`)
+			hasNode[n.id] = true
+		}
+	})
+	.once('end', () => t.end())
+})
