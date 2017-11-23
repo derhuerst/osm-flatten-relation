@@ -38,11 +38,11 @@
 		"xml2js": "^0.4.17"
 	},
 	"devDependencies": {
-		"tape": "^4.5.1",
-		"tap-min": "^1.1"
+		"tap-spec": "^4.1.1",
+		"tape": "^4.5.1"
 	},
 	"scripts": {
-		"test": "tape test.js | tap-min",
+		"test": "tape test.js | tap-spec",
 		"prepublishOnly": "npm test"
 	}
 }
