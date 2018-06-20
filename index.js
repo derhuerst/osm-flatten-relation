@@ -1,7 +1,7 @@
 'use strict'
 
 const queue = require('queue')
-const PassThrough = require('readable-stream/passthrough')
+const {Readable} = require('stream')
 const {fetch} = require('fetch-ponyfill')({Promise: require('pinkie-promise')})
 const parse = require('xml2js').parseString
 
@@ -75,17 +75,20 @@ const getNode = (id, onNode, count) => (next) =>
 	.catch(next)
 
 const flatten = (id, concurrency = 4, retries = 3) => {
-	const out = new PassThrough({objectMode: true})
+	const out = new Readable({
+		objectMode: true,
+		read: () => {}
+	})
 
 	const tasks = queue()
 	tasks.concurrency = concurrency
 	tasks.on('error', (err, task) => {
 		if (!task.retries) task.retries = 1
 
-		if (task.retries >= retries) out.emit('error', err)
+		if (task.retries >= retries) out.destroy(err)
 		else tasks.push(task)
 	})
-	tasks.on('end', () => out.end())
+	tasks.on('end', () => out.push(null))
 
 	const stats = {
 		relation: 0,
@@ -111,7 +114,7 @@ const flatten = (id, concurrency = 4, retries = 3) => {
 		} else if (child.type === 'node') {
 			tasks.push(getNode(child.id, onNode, count))
 		} else {
-			out.emit('error', new Error(`unknown child type ${child.type}`))
+			out.destroy(new Error(`unknown child type ${child.type}`))
 		}
 	}
 
@@ -119,7 +122,7 @@ const flatten = (id, concurrency = 4, retries = 3) => {
 	const onNode = (n) => {
 		if (!hasNodes[n.id]) {
 			hasNodes[n.id] = true
-			out.write(n)
+			out.push(n)
 		}
 	}
 
