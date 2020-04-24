@@ -38,7 +38,7 @@
 	},
 	"devDependencies": {
 		"tap-spec": "^5.0.0",
-		"tape": "^4.5.1"
+		"tape": "^5.0.0"
 	},
 	"scripts": {
 		"test": "tape test.js | tap-spec",
