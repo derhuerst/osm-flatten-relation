@@ -1,47 +1,51 @@
 {
-	"name": "osm-flatten-relation",
-	"description": "Resolve an OpenStreetMap relation recursively.",
-	"version": "1.0.2",
-	"main": "index.js",
-	"files": [
-		"index.js",
-		"cli.js"
-	],
-	"bin": {
-		"osm-flatten-relation": "./cli.js"
-	},
-	"keywords": [
-		"osm",
-		"openstreetmap",
-		"relation",
-		"flatten",
-		"tree",
-		"recursive"
-	],
-	"author": "Jannis R <mail@jannisr.de>",
-	"homepage": "https://github.com/derhuerst/osm-flatten-relation",
-	"repository": "derhuerst/osm-flatten-relation",
-	"bugs": "https://github.com/derhuerst/osm-flatten-relation/issues",
-	"license": "ISC",
-	"engine": {
-		"node": ">=6"
-	},
-	"dependencies": {
-		"ansi-diff-stream": "^1.2.0",
-		"ansi-escapes": "^3.0.0",
-		"fetch-ponyfill": "^6.0.0",
-		"mri": "^1.1.0",
-		"ndjson": "^1.5.0",
-		"pinkie-promise": "^2.0.1",
-		"queue": "^6.0.0",
-		"xml2js": "^0.4.17"
-	},
-	"devDependencies": {
-		"tap-spec": "^5.0.0",
-		"tape": "^5.0.0"
-	},
-	"scripts": {
-		"test": "tape test.js | tap-spec",
-		"prepublishOnly": "npm test"
-	}
+  "name": "osm-flatten-relation",
+  "description": "Resolve an OpenStreetMap relation recursively.",
+  "version": "1.0.2",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "cli.js"
+  ],
+  "bin": {
+    "osm-flatten-relation": "./cli.js"
+  },
+  "keywords": [
+    "osm",
+    "openstreetmap",
+    "relation",
+    "flatten",
+    "tree",
+    "recursive"
+  ],
+  "author": "Jannis R <mail@jannisr.de>",
+  "homepage": "https://github.com/derhuerst/osm-flatten-relation",
+  "repository": "derhuerst/osm-flatten-relation",
+  "bugs": "https://github.com/derhuerst/osm-flatten-relation/issues",
+  "license": "ISC",
+  "engine": {
+    "node": ">=6"
+  },
+  "dependencies": {
+    "ansi-diff-stream": "^1.2.0",
+    "ansi-escapes": "^3.0.0",
+    "fetch-ponyfill": "^6.0.0",
+    "mri": "^1.1.0",
+    "ndjson": "^1.5.0",
+    "pinkie-promise": "^2.0.1",
+    "queue": "^6.0.0",
+    "xml2js": "^0.4.17",
+    "snyk": "^1.319.0"
+  },
+  "devDependencies": {
+    "tap-spec": "^5.0.0",
+    "tape": "^5.0.0"
+  },
+  "scripts": {
+    "test": "tape test.js | tap-spec",
+    "prepublishOnly": "npm test",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
