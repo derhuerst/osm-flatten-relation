@@ -8,7 +8,6 @@ const require = createRequire(import.meta.url)
 import mri from 'mri'
 import {isatty} from 'tty'
 import differ from 'ansi-diff-stream'
-import esc from 'ansi-escapes'
 import {stringify as asNdjson} from 'ndjson'
 import {flattenOsmRelation as flatten} from './index.js'
 const pkg = require('./package.json')
