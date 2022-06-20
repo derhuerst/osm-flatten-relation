@@ -24,12 +24,12 @@
 	"bugs": "https://github.com/derhuerst/osm-flatten-relation/issues",
 	"license": "ISC",
 	"engine": {
-		"node": ">=6"
+		"node": ">=16"
 	},
 	"dependencies": {
 		"ansi-diff-stream": "^1.2.0",
-		"ansi-escapes": "^3.0.0",
-		"fetch-ponyfill": "^6.0.0",
+		"ansi-escapes": "^5.0.0",
+		"fetch-ponyfill": "^7.1.0",
 		"mri": "^1.1.0",
 		"ndjson": "^2.0.0",
 		"pinkie-promise": "^2.0.1",
