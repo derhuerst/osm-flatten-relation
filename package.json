@@ -37,11 +37,13 @@
 		"xml2js": "^0.4.17"
 	},
 	"devDependencies": {
+		"eslint": "^8.18.0",
 		"tap-spec": "^5.0.0",
 		"tape": "^5.0.0"
 	},
 	"scripts": {
+		"lint": "eslint .",
 		"test": "tape test.js | tap-spec",
-		"prepublishOnly": "npm test"
+		"prepublishOnly": "npm run lint && npm test"
 	}
 }
