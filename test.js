@@ -1,7 +1,5 @@
-'use strict'
-
-const test    = require('tape')
-const flatten = require('./index')
+import test from 'tape'
+import {flattenOsmRelation as flatten} from './index.js'
 
 test('works', (t) => {
 	flatten(2679163, 5, 5)

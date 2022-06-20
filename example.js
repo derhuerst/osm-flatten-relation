@@ -1,6 +1,4 @@
-'use strict'
-
-const flatten = require('.')
+import {flattenOsmRelation as flatten} from './index.js'
 
 flatten(5885313, 5, 5)
 .on('stats', (stats) => console.error(stats))

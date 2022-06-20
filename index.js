@@ -1,9 +1,10 @@
-'use strict'
+import queue from 'queue'
+import {Readable} from 'stream'
+import createFetch from 'fetch-ponyfill'
+import Promise from 'pinkie-promise'
+import {parseString as parse} from 'xml2js'
 
-const queue = require('queue')
-const {Readable} = require('stream')
-const {fetch} = require('fetch-ponyfill')({Promise: require('pinkie-promise')})
-const parse = require('xml2js').parseString
+const {fetch} = createFetch({Promise})
 
 const get = (type, id) => {
 	return fetch(`http://www.openstreetmap.org/api/0.6/${type}/${id}`, {
@@ -37,9 +38,9 @@ const getRelation = (id, onChild, count) => (next) =>
 		if (Array.isArray(d.relation[0].member))
 			d.relation[0].member
 			.map((c) => ({
-				  type: c.$.type
-				, role: c.$.role
-				, id: parseInt(c.$.ref)
+				type: c.$.type,
+				role: c.$.role,
+				id: parseInt(c.$.ref),
 			}))
 			.forEach(onChild)
 		next()
@@ -74,7 +75,7 @@ const getNode = (id, onNode, count) => (next) =>
 	})
 	.catch(next)
 
-const flatten = (id, concurrency = 4, retries = 3) => {
+const flattenOsmRelation = (id, concurrency = 4, retries = 3) => {
 	const out = new Readable({
 		objectMode: true,
 		read: () => {}
@@ -132,4 +133,6 @@ const flatten = (id, concurrency = 4, retries = 3) => {
 	return out
 }
 
-module.exports = flatten
+export {
+	flattenOsmRelation,
+}

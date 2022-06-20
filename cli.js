@@ -1,14 +1,17 @@
 #!/usr/bin/env node
-'use strict'
 
-const mri = require('mri')
-const {isatty} = require('tty')
-const differ = require('ansi-diff-stream')
-const esc = require('ansi-escapes')
-const ndjson = require('ndjson')
+// todo: use import assertions once they're supported by Node.js & ESLint
+// https://github.com/tc39/proposal-import-assertions
+import {createRequire} from 'module'
+const require = createRequire(import.meta.url)
 
+import mri from 'mri'
+import {isatty} from 'tty'
+import differ from 'ansi-diff-stream'
+import esc from 'ansi-escapes'
+import {stringify as asNdjson} from 'ndjson'
+import {flattenOsmRelation as flatten} from './index.js'
 const pkg = require('./package.json')
-const flatten = require('.')
 
 const argv = mri(process.argv.slice(2), {
 	boolean: ['help', 'h', 'version', 'v', 'silent', 's']
@@ -49,7 +52,7 @@ const data = flatten(+argv._[0], 1, 1)
 
 data
 .on('error', showError)
-.pipe(ndjson.stringify())
+.pipe(asNdjson())
 .pipe(process.stdout)
 
 

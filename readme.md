@@ -26,7 +26,15 @@ osm-flatten-relation 2679163 >nodes.ndjson
 As a JavaScript library:
 
 ```js
+import {flattenOsmRelation as flatten} from 'osm-flatten-relation'
+
 flatten(relation, concurrency = 4, retries = 3)
+.on('stats', (stats) => console.log(stats))
+.on('relation', (relation) => console.log('relation', relation.id))
+.on('way', (way) => console.log('way', way.id))
+.on('node', (node) => console.log('node', node.id))
+// .on('data', console.log)
+.on('error', console.error)
 ```
 
 `flatten` returns a [readable stream](https://nodejs.org/api/stream.html#stream_class_stream_readable) of a [relation](http://wiki.openstreetmap.org/wiki/Elements#Relation)'s [ways](http://wiki.openstreetmap.org/wiki/Elements#Way) and [nodes](http://wiki.openstreetmap.org/wiki/Elements#Node). It will also emit the events `relation`, `way` and `node` whenever it fetched data.
@@ -38,10 +46,14 @@ flatten(relation, concurrency = 4, retries = 3)
 To get all nodes of [*U-Bahnlinie U6: Alt-Mariendorf => Alt-Tegel*](http://www.openstreetmap.org/relation/2679163) with a `concurrency` of `5` requests:
 
 ```js
-const flatten = require('osm-flatten-relation')
+import {flattenOsmRelation as flatten} from 'osm-flatten-relation'
 
 flatten(2679163, 5)
 .on('data', console.log)
+.once('erorr', (err) => {
+	console.log(err)
+	process.exit(1)
+})
 ```
 
 ```js
