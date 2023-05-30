@@ -24,7 +24,7 @@
 	"repository": "derhuerst/osm-flatten-relation",
 	"bugs": "https://github.com/derhuerst/osm-flatten-relation/issues",
 	"license": "ISC",
-	"engine": {
+	"engines": {
 		"node": ">=16"
 	},
 	"dependencies": {
